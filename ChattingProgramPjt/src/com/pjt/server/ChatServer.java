@@ -1,7 +1,9 @@
 package com.pjt.server;
 
-import java.net.*;
-import java.util.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class ChatServer {
 	

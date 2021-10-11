@@ -3,6 +3,13 @@ package com.pjt.DTO;
 public class Member {
 	private String id, pw, name, tel;
 
+	public Member(String i, String p, String n, String t) {
+		id = i;
+		pw = p;
+		name = n;
+		tel = t;
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -34,6 +41,5 @@ public class Member {
 	public void setTel(String tel) {
 		this.tel = tel;
 	}
-	
-	
+
 }
