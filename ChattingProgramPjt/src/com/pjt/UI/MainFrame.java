@@ -9,7 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 public class MainFrame extends JFrame {
-	public static Socket socket = null;
 	private JPanel contentPane;
 
 	/**

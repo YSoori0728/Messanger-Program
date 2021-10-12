@@ -17,7 +17,7 @@ public class MemberDAO {
 
 	public int check(String id, String pw) {
 		for (String a : list.keySet()) {
-			if (a.equals(id) && list.get(a).getPw().equals(pw)) {
+			if (a.equals(id) && list.get(a).getuPw().equals(pw)) {
 
 				return 1;
 
@@ -37,5 +37,14 @@ public class MemberDAO {
 
 	public void regist(String id, String pw, String name, String tel) {
 		list.put(id, new Member(id, pw, name, tel));
+	}
+	
+	public Member you(String id) {
+		for(String a : list.keySet()) {
+			if(id.equals(a)) {
+				return list.get(id);
+			}
+		}
+		return null;
 	}
 }

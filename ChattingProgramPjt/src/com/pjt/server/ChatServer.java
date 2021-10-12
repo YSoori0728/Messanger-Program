@@ -5,6 +5,8 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import com.pjt.thread.WorkerTherad;
+
 public class ChatServer {
 	
 	//사용할 임의의 포트 지정
@@ -17,8 +19,12 @@ public class ChatServer {
 		
 		//서버소켓
 		ServerSocket sServer = null;
+		
 		System.out.println("Server Start!\nPortNumber : "+portNum+"\n");
 		line();
+		
+		WorkerTherad wth = new WorkerTherad(access);
+		wth.start();
 		
 		//Server Running
 		try {

@@ -24,9 +24,10 @@ public class userLogin extends JPanel {
 	private JTextField logo;
 	private JTextField idFeild;
 	private JPasswordField uPwField;
-	
+	static String saveId;
 	//전역변수로 설정해주어 다른 패널에서도 사용할 수 있도록 함.
 	public static Socket socket = null;
+	static Socket goSocket;
 
 	/**
 	 * Create the panel.
@@ -109,17 +110,18 @@ public class userLogin extends JPanel {
 				
 				try {
 					//버튼을 누르면 소켓을 활성화해서 서버와 연결을 시도한다. 포트번호 앞의 IP주소는 서버의 IP주소로 바꿔줘야한다.
-					socket = new Socket("192.168.1.16", 9090);
-					
+					socket = new Socket("127.0.0.1", 9090);
+					goSocket = socket;
 					//인풋을 통해 서버로부터 정보를 받아오고 아웃풋을 통해 서버에 정보를 전달한다.
 					input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 					
-					//로그인을 나타내는 신호로 1을 먼저 전송해준다.
-					output.println("1");
+					//로그인을 나타내는 신호로 login을 먼저 전송해준다.
+					output.println("login");
 					
 					//ID, Password 정보를 담아서 서버로 보내는 과정(120~124)
 					String id = idFeild.getText();
+					saveId = id; //접속할 때 사용한 나의 Id를 받아놓아줘야함. 자기 정보를 올리기 위해
 					output.println(id);
 					String pw = String.valueOf(uPwField.getPassword());
 					output.println(pw);
@@ -131,8 +133,9 @@ public class userLogin extends JPanel {
 					System.out.println(response);
 
 					if (response.equals("1")) { 
-						frmMain.SetHome(thispan);
 						homeUI.add();
+						frmMain.SetHome(thispan);
+						
 						System.out.println("login Success");
 					} else {
 						System.out.println("login failed");

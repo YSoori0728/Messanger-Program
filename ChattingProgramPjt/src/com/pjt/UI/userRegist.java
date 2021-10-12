@@ -130,12 +130,12 @@ public class userRegist extends JPanel {
 				
 				try {
 					//버튼을 누르면 소켓을 활성화하고 서버와 연결을 시도한다. 포트번호 앞의 IP주소는 서버의 IP주소로 바꿔줘야한다.
-					socket = new Socket("192.168.1.16", 9090);
+					socket = new Socket("192.168.0.43", 9090);
 					input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 					
 					//회원가입을 나타내는 신호로는 2를 먼저 전송해준다.
-					output.println("2");
+					output.println("regist");
 					
 					//회원가입에 필요한 정보(id, password, name, tel)들을 서버로 전송할 준비를 한다.(141~145)
 					String id = uIdFeild.getText();
