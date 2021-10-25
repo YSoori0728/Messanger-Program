@@ -130,7 +130,7 @@ public class userRegist extends JPanel {
 				
 				try {
 					//버튼을 누르면 소켓을 활성화하고 서버와 연결을 시도한다. 포트번호 앞의 IP주소는 서버의 IP주소로 바꿔줘야한다.
-					socket = new Socket("192.168.0.43", 9090);
+					socket = new Socket("127.0.0.1", 9090);
 					input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 					

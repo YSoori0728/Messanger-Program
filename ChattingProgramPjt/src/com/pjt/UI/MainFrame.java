@@ -10,7 +10,7 @@ import javax.swing.border.EmptyBorder;
 
 public class MainFrame extends JFrame {
 	private JPanel contentPane;
-
+	static MainFrame frame;
 	/**
 	 * Launch the application.
 	 */
@@ -18,7 +18,8 @@ public class MainFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainFrame frame = new MainFrame();
+					frame = new MainFrame();
+					
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -34,7 +35,7 @@ public class MainFrame extends JFrame {
 	userLogin ul;
 	userRegist ur;
 	homeUI home;
-
+	
 	public MainFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 400, 650);
@@ -75,4 +76,5 @@ public class MainFrame extends JFrame {
 		contentPane.revalidate();
 		contentPane.repaint();
 	}
+	
 }

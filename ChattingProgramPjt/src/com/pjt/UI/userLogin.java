@@ -26,8 +26,8 @@ public class userLogin extends JPanel {
 	private JPasswordField uPwField;
 	static String saveId;
 	//전역변수로 설정해주어 다른 패널에서도 사용할 수 있도록 함.
-	public static Socket socket = null;
-	static Socket goSocket;
+	static Socket socket = null;
+	public static Socket goSocket;
 
 	/**
 	 * Create the panel.

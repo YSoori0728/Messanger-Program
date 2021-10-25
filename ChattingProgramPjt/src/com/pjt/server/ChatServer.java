@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.pjt.thread.WorkerTherad;
+import com.pjt.thread.WorkerThread;
 
 public class ChatServer {
 	
@@ -23,7 +23,7 @@ public class ChatServer {
 		System.out.println("Server Start!\nPortNumber : "+portNum+"\n");
 		line();
 		
-		WorkerTherad wth = new WorkerTherad(access);
+		WorkerThread wth = new WorkerThread(access);
 		wth.start();
 		
 		//Server Running
@@ -36,7 +36,7 @@ public class ChatServer {
 				
 				//접속자를 받을 소켓 accept()를 계속 반복한다.
 				Socket socket = sServer.accept();
-				
+				System.out.println(socket+"connecting");
 				//접속자가 있을 경우, 큐에 순서대로 집어넣는다.
 				//왜냐하면 멀티스레드를 구현해야 하기 때문이다.
 				access.add(socket);

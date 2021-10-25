@@ -12,18 +12,22 @@ import java.util.Queue;
 import com.pjt.DAO.MemberDAO;
 import com.pjt.DTO.Member;
 
-public class WorkerTherad extends Thread{
+public class WorkerThread extends Thread{
 	
 	Queue<Socket> access;
 	MemberDAO mDAO = new MemberDAO();
 	
 	//나중에 접속자 목록을 나타내줄 해쉬맵, 현재는 소켓을 받아주지만 스레드로 바꿔줘야한다.(아직 완벽한 이해 불가능.)
-	static HashMap<String, Member> userMap = new HashMap<String, Member>();
+	public static HashMap<String, Member> userMap = new HashMap<String, Member>();
 	BufferedReader input;
-	PrintWriter output;
+	static PrintWriter output;
+	
+	public WorkerThread() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	//생성자
-	public WorkerTherad(Queue<Socket> access) {
+	public WorkerThread(Queue<Socket> access) {
 		this.access = access;
 	}
 	
@@ -68,7 +72,8 @@ public class WorkerTherad extends Thread{
 							m.setSocket(socket);
 							userMap.put(id, m);
 							userListUpload(); //유저목록 갱신
-							m.start(); //송수신 시작?
+							System.out.println("해쉬맵 사이즈 : "+userMap.size());
+							userMap.get(id).start();
 						}else {
 							System.out.println("로그인 실패!");
 						}
@@ -99,6 +104,7 @@ public class WorkerTherad extends Thread{
 					
 				} catch (Exception e) {
 					// TODO: handle exception
+					
 				}
 			}
 			
@@ -112,19 +118,19 @@ public class WorkerTherad extends Thread{
 	}
 	
 	//일단 접속한 모든 유저들의 목록을 갱신시켜주는 메소드
-	public void userListUpload() {
-		
+	public static void userListUpload() throws InterruptedException {
 		for(String s : userMap.keySet()) {
 			try {
-				input = new BufferedReader(new InputStreamReader(userMap.get(s).getSocket().getInputStream()));
 				output = new PrintWriter(new OutputStreamWriter(userMap.get(s).getSocket().getOutputStream()));
 				output.println("listUpdate");
 				output.println(userMap.size());
 				for(String s1 : userMap.keySet()) {
-					output.println(userMap.get(s1).getuId());
-					output.println(userMap.get(s1).getuPw());
+					output.println(userMap.get(s1).getuId()+"/"+userMap.get(s1).getuName());
+					System.out.print(s1+", ");
 				}
+				System.out.println("에게 보냄");
 				output.flush();
+				Thread.sleep(10);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

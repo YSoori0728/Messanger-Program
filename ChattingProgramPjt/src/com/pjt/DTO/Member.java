@@ -7,6 +7,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import com.pjt.thread.WorkerThread;
+
 public class Member extends Thread{
 	private String uId;
 	private String uPw;
@@ -16,6 +18,7 @@ public class Member extends Thread{
 	Socket socket;
 	BufferedReader input;
 	PrintWriter output;
+
 	
 	public Member(String id, String pw, String name, String tel) {
 		this.uId = id;
@@ -26,20 +29,48 @@ public class Member extends Thread{
 	
 	@Override
 	public void run() {
-		while(true) {
+		
+			System.out.println("¿¡·¯");
 			try {
 				input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				String message = input.readLine();
-				System.out.println(message);
+				while(true) {
+					String protocol = input.readLine();
+					if(protocol == null) {
+						System.out.println("¿¬°á²÷±è");
+						socket.close();
+						WorkerThread.userMap.remove(getuId());
+						WorkerThread.userListUpload();
+						break;
+					}
+					if(protocol.equals("msg")) {
+						String sendMember = input.readLine();
+						String receiveMember = input.readLine();
+						String message = input.readLine();
+						send(message, receiveMember);
+					}else if(protocol.equals("quit")) {
+						System.out.println(getuId());
+						socket.close();
+						WorkerThread.userMap.remove(getuId());
+						if(WorkerThread.userMap.size()!=0) {
+						WorkerThread.userListUpload();
+						}
+						System.out.println("ÇØ½¬¸Ê »çÀÌÁî : "+WorkerThread.userMap.size());
+						System.out.println(getuId()+"´Ô ·Î±×¾Æ¿ô");
+						
+					}
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				
 			}
-		}
+			
 	}
 
-	public void send(String message) {
+	public void send(String message, String receiver) {
+		Socket receiveSocket = WorkerThread.userMap.get(receiver).getSocket();
 		try {
-			output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+			output = new PrintWriter(new OutputStreamWriter(receiveSocket.getOutputStream()));
+			output.println("msg");
 			output.println(message);
 			output.flush();
 		} catch (Exception e) {

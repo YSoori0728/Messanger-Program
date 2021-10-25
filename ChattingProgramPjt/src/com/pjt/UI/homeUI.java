@@ -6,9 +6,13 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 import javax.swing.DefaultListModel;
@@ -51,26 +55,33 @@ public class homeUI extends JPanel {
 				while(true) {
 					try {
 						BufferedReader input = new BufferedReader(new InputStreamReader(userLogin.socket.getInputStream()));
-						if(input.readLine().equals("listUpdate")) {
+						String a = input.readLine();
+						if(a.equals("listUpdate")) {
 							mylist.removeAllElements();
 							int size = Integer.parseInt(input.readLine());
 							for(int i=0;i<size;i++) {
-								String idT = input.readLine();
-								String nameT = input.readLine();
-								System.out.println(idT);
-								if(userLogin.saveId.equals(idT)) {
-									name.setText(nameT);
-									id.setText(idT);
+								String[] users = input.readLine().split("/");
+								if(userLogin.saveId.equals(users[0])) {
+									name.setText(users[1]);
+									id.setText(users[0]);
 								}else {
-									mylist.addElement("이름 : "+nameT+" / "+"ID : "+idT);
-									
+									mylist.addElement("이름 : "+users[1]+" / ID : "+users[0]);
 								}
 							}
 							
+						}else if(a.equals("msg")) {
+							String message = input.readLine();
+							System.out.println(message);
+							chat.textArea.append(message + "\n");
 						}
 					} catch (IOException e) {
-						
 						e.printStackTrace();
+						try {
+							userLogin.socket.close();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
 				}
 			}
@@ -146,6 +157,22 @@ public class homeUI extends JPanel {
 		p.setBounds(12, 0, 356, 416);
 		panel_2.add(p);
 		
+		frmMain.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				PrintWriter output;
+				try {
+					output = new PrintWriter(new OutputStreamWriter(userLogin.goSocket.getOutputStream()));
+					String protocol = "quit\r\n";
+					output.println(protocol);
+					output.flush();
+					System.out.println("클라이언트 종료");
+					System.exit(0);
+				} catch (Exception e2) {
+					// TODO: handle exception
+				}
+			}
+		});
+		
 	}
 
 	//리스트항목을 눌렀을 때 대화창을 나타내는 기능 구현(아직 계정과의 연동 X)
@@ -162,12 +189,14 @@ public class homeUI extends JPanel {
 				//아직 잘 모름. 일단 직사각형 박스의 크기를 구하고 그 범위를 벗어나면 해당 X하도록 하는 것 같음.
 				Rectangle r = list.getCellBounds(0, list.getLastVisibleIndex());
 				if(r!=null && r.contains(e.getPoint())) {
-					chat ct = new chat(frmMain, "title");
+					String sendId[] = list.getSelectedValue().toString().split(" : ");
+					chat ct = new chat(frmMain, sendId[2]);
 					ct.setVisible(true);
-					int index = list.locationToIndex(e.getPoint());
-					System.out.println(index);
+					ct.receiveMember = sendId[2];
+					
+					
+					
 				}
-				
 			}
 		}
 
